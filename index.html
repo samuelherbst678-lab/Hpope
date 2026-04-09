@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Kardinal Generator</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  text-align: center;
+}
+
+h1 {
+  margin: 20px;
+}
+
+.form input, .form select, .form button {
+  padding: 8px;
+  margin: 5px;
+}
+
+.year {
+  font-size: 28px;
+  margin: 20px;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  width: 170px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  padding: 5px;
+  font-weight: bold;
+}
+
+.flag {
+  width: 24px;
+  height: 16px;
+}
+
+.name {
+  padding: 6px;
+  font-weight: bold;
+}
+
+.votes {
+  font-size: 14px;
+  color: #333;
+  padding-bottom: 8px;
+}
+
+/* Farben */
+.erz { background: #0b3d91; }
+.tra { background: #1f5fd1; }
+.kon { background: #6fa8ff; }
+.mod { background: #f1c40f; color: black; }
+.ref { background: #ff6b6b; }
+.lib { background: #e60000; }
+.pro { background: #8b0000; }
+</style>
+
+</head>
+<body>
+
+<h1>Kardinal Generator</h1>
+
+<div class="form">
+  <input type="text" id="name" placeholder="Name">
+  <input type="number" id="age" placeholder="Alter">
+  <input type="number" id="votes" placeholder="Stimmen">
+
+  <input type="text" id="country" placeholder="Ländercode (z.B. de, it, us)">
+
+  <select id="scale">
+    <option value="erz">ERZ</option>
+    <option value="tra">TRA</option>
+    <option value="kon">KON</option>
+    <option value="mod">MOD</option>
+    <option value="ref">REF</option>
+    <option value="lib">LIB</option>
+    <option value="pro">PRO</option>
+  </select>
+
+  <input type="number" id="year" placeholder="Jahr">
+  <input type="file" id="image">
+
+  <br>
+  <button onclick="createCard()">Kandidat hinzufügen</button>
+</div>
+
+<div class="year" id="yearDisplay"></div>
+
+<div class="container" id="container"></div>
+
+<script>
+let count = 0;
+
+function createCard() {
+
+  if (count >= 10) {
+    alert("Maximal 10 Kandidaten!");
+    return;
+  }
+
+  const name = document.getElementById("name").value;
+  const age = document.getElementById("age").value;
+  const votes = document.getElementById("votes").value;
+  const country = document.getElementById("country").value.toLowerCase();
+  const scale = document.getElementById("scale").value;
+  const year = document.getElementById("year").value;
+  const imageInput = document.getElementById("image");
+
+  if (!imageInput.files[0]) {
+    alert("Bitte Bild auswählen");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+
+    const container = document.getElementById("container");
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const flagUrl = "https://flagcdn.com/w40/" + country + ".png";
+
+    card.innerHTML = `
+      <img src="${e.target.result}">
+      <div class="info ${scale}">
+        <img class="flag" src="${flagUrl}">
+        <div>${age}</div>
+        <div>${scale.toUpperCase()}</div>
+      </div>
+      <div class="name">${name}</div>
+      <div class="votes">${votes} Stimmen</div>
+    `;
+
+    container.appendChild(card);
+    count++;
+
+    if (year) {
+      document.getElementById("yearDisplay").innerText = year;
+    }
+
+  }
+
+  reader.readAsDataURL(imageInput.files[0]);
+}
+</script>
+
+</body>
+</html>
